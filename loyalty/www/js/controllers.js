@@ -10,6 +10,8 @@ angular.module('starter.controllers', [])
           console.log("An error happened -> " + error);
       });
   };
+
+  
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {

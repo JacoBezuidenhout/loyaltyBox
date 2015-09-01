@@ -23,6 +23,49 @@
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/services.js"></script>
+    <script src="js/forge.min.js"></script>
+    <script type="text/javascript">
+
+      var rsa = forge.pki.rsa;
+      var keypair = rsa.generateKeyPair({bits: 128, e: 0x10001});
+
+      var encryptMessage = function(message,cb)
+      {
+        var kdf1 = new forge.kem.kdf1(forge.md.sha1.create());
+        var kem = forge.kem.rsa.create(kdf1);
+        var result = kem.encrypt(keypair.publicKey, 16);
+        var iv = forge.random.getBytesSync(12);
+        var cipher = forge.cipher.createCipher('AES-GCM', result.key);
+        cipher.start({iv: iv});
+        cipher.update(forge.util.createBuffer(message));
+        cipher.finish();
+        var encrypted = cipher.output.getBytes();
+        var tag = cipher.mode.tag.getBytes();
+        cb({iv: iv,tag: tag, encapsulation: result.encapsulation, encrypted: encrypted});
+      }
+
+      var decryptMessage = function(packet,cb)
+      {
+        var kdf1 = new forge.kem.kdf1(forge.md.sha1.create());
+        var kem = forge.kem.rsa.create(kdf1);
+        var key = kem.decrypt(keypair.privateKey, packet.encapsulation, 16);
+        var decipher = forge.cipher.createDecipher('AES-GCM', key);
+        decipher.start({iv: packet.iv, tag: packet.tag});
+        decipher.update(forge.util.createBuffer(packet.encrypted));
+        var pass = decipher.finish();
+        if(pass) {
+          cb(decipher.output.getBytes());
+        }
+      }
+
+      encryptMessage("HelloWorld",function(p){
+        console.log("Encrypted Packet", p);
+        decryptMessage(p,function(m){
+          console.log('Decrypted Message', m);
+        });
+      });
+
+    </script>
   </head>
   <body ng-app="starter">
     <!--
