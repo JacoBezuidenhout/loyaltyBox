@@ -1,4 +1,4 @@
-var url = "http://10.0.0.120:1337";
+var url = "http://loyalty.peoplesoft.co.za";
 
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 

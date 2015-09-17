@@ -1,0 +1,16 @@
+<ion-view view-title="{{currentRace.title}}">
+  <ion-content>
+    <ion-list>
+      <div class="list card" ng-repeat="route in routes"> 
+	    <div class="item item-divider">{{route.title}}</div>
+	    <div class="item item-image">
+	      <img ng-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzvEU9C9NFaUUehCMaYsYdUGzG6rjrUCLdbL-CHLnJSThfoPcr">
+	    </div>
+	    <a class="item item-icon-left assertive" href="#/tab/dash/{{series.id}}/{{race.id}}/{{route.id}}">
+	      <i class="icon ion-stats-bars"></i>
+	    Rankings
+	    </a>
+	  </div>
+    </ion-list>
+  </ion-content>
+</ion-view>

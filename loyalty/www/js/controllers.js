@@ -1,3 +1,8 @@
+var qrToJson = function(qr)
+{
+  return JSON.parse(qr.text.replace("id",'"id"').replace("deviceId",'"deviceId"').replace("admin",'"admin"'));
+}
+
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope,$http,$cordovaBarcodeScanner,$cordovaPinDialog,$ionicLoading,$ionicPopup,$location) {
@@ -45,8 +50,8 @@ angular.module('starter.controllers', [])
       
       if (qrMember.text.length > 0 && !qrMember.cancelled)
       {
-        t.qrMember = qrMember;
-        var id = JSON.parse(qrMember.text.replace("id",'"id"').replace("deviceId",'"deviceId"')).id;
+        t.qrMember = qrToJson(qrMember);
+        var id = t.qrMember.id;
         $http.get(url + "/member/" + id).then(function(response){
 
           var myPopup = $ionicPopup.show({
@@ -65,7 +70,7 @@ angular.module('starter.controllers', [])
                   // t.amount = $scope.trans.amount;
                   alert(JSON.stringify(t));
                   $cordovaBarcodeScanner.scan().then(function(qrAdmin) {
-                    t.qrAdmin = qrAdmin;
+                    t.qrAdmin = qrToJson(qrAdmin);
                     $http.post(url + "/member/" + response.data.id + "/transactions/add/",t)
                     .then(function(response){
                       $scope.success();
@@ -162,7 +167,7 @@ angular.module('starter.controllers', [])
       if (imageData.text.length > 0 && !imageData.cancelled)
       {
         m.qr = imageData;
-        m.qr.text = JSON.parse(m.qr.text.replace("id",'"id"').replace("deviceId",'"deviceId"'));
+        m.qr.text = qrToJson(imageData);
         $cordovaPinDialog.prompt('Please enter a PIN (eg. 0000)').then(
           function(result) {
             if (result.buttonIndex == 1)
@@ -177,7 +182,7 @@ angular.module('starter.controllers', [])
                   $scope.hide();  
                   $scope.success();
                 },function(response){
-                  $scope.hide();
+                  $scope.error(JSON.stringify(response,null,4));
                 });
               }
               else

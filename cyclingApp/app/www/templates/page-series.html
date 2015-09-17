@@ -1,0 +1,33 @@
+<style type="text/css">
+  .slider {
+    /*height: 100%;*/
+  }
+</style>
+
+<ion-view view-title="Select your series">
+  <ion-content class="padding" scroll="false">
+    
+    <ion-slide-box show-pager="false" auto-play="true" does-continue="true">
+   
+      <ion-slide ng-repeat="s in series">
+          <div class="list card">
+            <div class="item item-avatar">
+              <img ng-src="{{s.logo}}">
+              <h2>{{s.title}}</h2>
+              <p>{{s.desc}}</p>
+            </div>
+            <div class="item item-image">
+              <img ng-src="{{s.image}}">
+            </div>
+          </div>
+      </ion-slide>
+
+    </ion-slide-box>
+  </ion-content>
+  <ion-footer-bar align-title="left" class="bar-assertive" ng-click="enterSeries()">
+    <h1 class="title">Enter Series</h1>
+    <div class="buttons">
+      <a class="button button-clear"><i class="icon ion-play"></i></a>
+    </div>
+  </ion-footer-bar>
+</ion-view>

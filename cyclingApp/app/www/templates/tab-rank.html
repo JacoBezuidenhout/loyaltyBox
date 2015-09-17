@@ -1,0 +1,11 @@
+<ion-view view-title="{{race.title}}">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-avatar item-icon-right" ng-repeat="route in race.routes" type="item-text-wrap" href="#/tab/rider/{{route.riderId}}">
+        <img ng-src="{{route.image}}">
+        <h2>{{route.name}}<span class="badge badge-assertive">{{route.route}}</span></h2>
+        <p>{{route.desc}}</p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,32 @@
+<ion-view view-title="{{series.title}}">
+  <ion-content class="padding">
+    
+  <div class="list card">
+    <div class="item item-avatar">
+      <img ng-src="{{series.image}}">
+      <h2>{{series.title}}</h2>
+      <p>{{series.desc}}</p>
+    </div>
+  </div>
+    
+  <div class="list card"> 
+    <div class="item item-divider">{{currentRace.title}}</div>
+    <div class="item item-image">
+      <img ng-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzvEU9C9NFaUUehCMaYsYdUGzG6rjrUCLdbL-CHLnJSThfoPcr">
+    </div>
+    <a class="item item-icon-left positive" href="#/tab/dash/current">
+      <i class="icon ion-merge"></i>
+    Routes
+    </a>
+  </div>
+
+  <div class="list card" ng-repeat="race in series.races | orderBy : '-id'" ng-hide="$first"> 
+    <div class="item item-divider">{{race.date}} - {{race.title}}</div>
+    <a class="item item-icon-left assertive" href="#/tab/dash/{{series.id}}/{{race.id}}">
+      <i class="icon ion-stats-bars"></i>
+    Rankings
+    </a>
+  </div>
+    
+  </ion-content>
+</ion-view>
