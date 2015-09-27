@@ -1,11 +1,11 @@
 {
-  "name": "server",
+  "name": "cycling",
   "private": true,
   "version": "0.0.0",
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
-    "ejs": "^0.8.8",
+    "ejs": "~0.8.4",
     "grunt": "0.4.2",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.10.1",
@@ -22,8 +22,7 @@
     "rc": "~0.5.0",
     "sails": "~0.11.0",
     "sails-disk": "~0.10.0",
-    "sails-mongo": "^0.11.4",
-    "sails-sqlserver": "^0.10.8"
+    "sails-mongo": "^0.11.4"
   },
   "scripts": {
     "debug": "node debug app.js",
@@ -32,8 +31,8 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/anonymous node/sails user/server.git"
+    "url": "git://github.com/jaco/cycling.git"
   },
-  "author": "anonymous node/sails user",
+  "author": "jaco",
   "license": ""
 }

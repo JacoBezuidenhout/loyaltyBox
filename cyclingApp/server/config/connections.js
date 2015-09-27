@@ -56,7 +56,7 @@ module.exports.connections = {
   * Run: npm install sails-mongo                                             *
   *                                                                          *
   ***************************************************************************/
-  mongodb: {
+  someMongodbServer: {
     adapter: 'sails-mongo',
     host: 'localhost',
     port: 27017,
@@ -80,18 +80,8 @@ module.exports.connections = {
     user: 'YOUR_POSTGRES_USER',
     password: 'YOUR_POSTGRES_PASSWORD',
     database: 'YOUR_POSTGRES_DB'
-  },
-
-  vm1DB: {
-    adapter: 'sails-sqlserver',
-    user: 'jaco',
-    password: 'eequuxah5226!!', 
-    host: 'zvu5kf2h3x.database.windows.net',
-    database: 'cycling',
-    options: {
-      encrypt: true   // use this for Azure databases 
-    }
   }
+
 
   /***************************************************************************
   *                                                                          *

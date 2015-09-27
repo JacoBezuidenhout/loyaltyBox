@@ -4,18 +4,40 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{fav.title}}">
+<ion-view view-title="{{fav.name || 'No'}} {{fav.surname || 'Name'}}">
   <ion-content class="padding">
     <div class="list card">
 
-      <div class="item item-avatar">
+      <div class="item item-avatar item-button-right">
         <img ng-src="{{fav.image}}">
-        <h2>{{fav.name}}</h2>
-        <p>{{fav.nextRace}}</p>
+        <h2>{{fav.name || 'No'}} {{fav.surname || 'Name'}}</h2>
+        <p>{{fav.lastUpdate || 'No Updates for this rider'}}</p>
+        <button class="button button-assertive button-clear" ng-click="following ? unfollow() : follow()"><i class="icon {{following ? 'ion-ios-star' : 'ion-ios-star-outline'}}"></i></button>
       </div>
 
-      <div class="item item-image">
-        <img ng-src="{{series.image}}">
+      <div class="item item-image" style="padding:5px;" data-tap-disabled="true">
+         <leaflet id="{{route.id}}" markers="route.checkpoints" defaults="defaults" legend="legend" paths="[route]" width="100%" height="250px"></leaflet>
+      </div>
+
+      <br/>
+      <div class="item item-divider">
+        Rank per checkpoint
+      </div>
+      <div class="item item-image" style="padding:5px;">
+        <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"></canvas> 
+      </div>
+
+    </div>
+    <div class="list card">
+
+      <div class="item item-divider">
+        <h2>Previous Races</h2>
+      </div>
+
+      <div class="item item-avatar" ng-repeat="race in races">
+        <img src="race.icon">
+        {{race.title}}
+        <span class="badge badge-assertive">{{race.rank}}</span>
       </div>
 
     </div>

@@ -1,11 +1,41 @@
 <ion-view view-title="{{race.title}}">
   <ion-content>
-    <ion-list>
-      <ion-item class="item-avatar item-icon-right" ng-repeat="route in race.routes" type="item-text-wrap" href="#/tab/rider/{{route.riderId}}">
-        <img ng-src="{{route.image}}">
-        <h2>{{route.name}}<span class="badge badge-assertive">{{route.route}}</span></h2>
-        <p>{{route.desc}}</p>
-      </ion-item>
-    </ion-list>
+    <div class="list card">
+	    <div class="item item-avatar">
+	        <img ng-src="{{race.image}}">
+	        <h2>{{fav.name || 'No'}} {{fav.surname || 'Name'}}</h2>
+	        <p>{{fav.lastUpdate || 'No Updates for this rider'}}</p>
+	    </div>
+
+	    <br/>
+	    <div class="item item-divider">
+	    	Top 3 
+	    </div>
+	    <div class="item item-image" style="padding:5px;">
+			<canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"></canvas> 
+	    </div>
+
+	    <br/>
+	    <div class="item item-divider">
+	    	Checkpoint Totals 
+	    </div>
+	    <div class="item item-image" style="padding:5px;">
+			<canvas id="bar" class="chart chart-bar" chart-data="data2" chart-labels="labels" chart-click="onClick"></canvas>
+	    </div>
+	    <br/>
+	    <div class="item item-divider">
+	    	Top 20 
+	    </div>
+
+	    <a class="item item-avatar" href="#/tab/rank/{{rank.id}}" ng-repeat="rank in ranks | orderBy: 'pos'">
+	      <img src="venkman.jpg">
+	      <h2>{{rank.name}} {{rank.surname}}</h2>
+	      <p>Back off, man. I'm a scientist.</p>
+	      <span class="badge badge-assertive">{{rank.pos}}</span>
+	    </a>
+
+    </div>
+
   </ion-content>
 </ion-view>
+
