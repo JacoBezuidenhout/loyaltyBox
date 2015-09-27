@@ -7,17 +7,16 @@ module.exports = {
   },
   afterCreate: function(u,cb)
   {
-  	Rider.update({id:u.rider},{lastUpdate: u.updateString})
-  	.exec(function afterwards(err, updated){
-	  	Checkpoint.findOne({id:u.checkpoint})
-	  	.exec(function afterwards(err, record){
+  	Rider.update({id:u.rider},{lastUpdate: u.updateString}).exec(function afterwards(err, updated){
+  	  Checkpoint.findOne({id:u.checkpoint}).exec(function afterwards(err, record){
   			console.log("RIDER",updated);
 	  		console.log("CHECKPOINT",record);
-	  		record.updateString = (updated.number || "no Number") + " Passed checkpoint";
-	  		record.save();
+	  		record.updateString = (updated[0].number || "No Number") + " passed " + record.title;
+	  		record.icon.markerColor = "green";
+        record.save();
 	  		console.log("CHECKPOINT",record);
 	  		cb();
-		});
+		  });
   	});
   }
 

@@ -157,6 +157,7 @@ var mock = {
     {
       $http.get(URL + "/route?race=" + race.id)
       .then(function(response){
+        console.dir(response);
         if (debug) console.log("got routes");
         if (response.data.length)
           cb(response.data);

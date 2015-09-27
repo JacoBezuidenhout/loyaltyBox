@@ -31,7 +31,7 @@
   <div class="list card "> 
     <div class="item item-balanced item-button-right">{{currentRace.title}}<button ng-click="refreshRoutes();" class="button button-clear button-dark"><i class="icon ion-ios-refresh"></i></button></div>
     <div class="item item-image" data-tap-disabled="true">
-      <leaflet id="dashMap" markers="checkpoints" bounds="bounds" center="center" defaults="defaults" legend="legend" paths="routes" width="100%" height="250px"></leaflet>
+      <leaflet id="dashMap" markers="checkpoints" center="center" defaults="defaults" legend="legend" paths="routes" width="100%" height="250px"></leaflet>
     </div>
     <a class="item item-icon-left positive" href="#/tab/dash/{{series.id}}/{{currentRace.id}}">
       <i class="icon ion-merge"></i>
@@ -41,7 +41,7 @@
 
   <div class="list card" ng-repeat="race in series.races | orderBy : '-id'" ng-hide="$first"> 
     <div class="item item-divider item-dark">{{race.date}} - {{race.title}}</div>
-    <a class="item item-icon-left positive" href="#/tab/dash/{{series.id}}/{{currentRace.id}}">
+    <a class="item item-icon-left positive" href="#/tab/dash/{{series.id}}/{{race.id}}">
       <i class="icon ion-merge"></i>
     Routes
     </a>

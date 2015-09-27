@@ -38,7 +38,6 @@ angular.module('app.controllers', [])
           },
           scrollWheelZoom: false
       },
-      bounds: {},
       routes: {},
       legend: {},
       center: {
@@ -97,7 +96,7 @@ angular.module('app.controllers', [])
         window.localStorage.seriesId = seriesId;
 
         $scope.refreshRoutes();
-        console.log("Refreshed routes");
+        console.log("Refreshed routes",$rootScope.currentRace);
       });
     } 
   });

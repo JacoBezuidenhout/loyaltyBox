@@ -7,10 +7,11 @@ http://localhost:1337/series/create?title=TOUR%20OF%20LEGENDS'&desc=MTN&image=to
 module.exports = {
 
   attributes: {
-  	title: "string",
-  	desc: "string",
-  	image: "string",
-  	sponsorImage: "string",
-  	races: {collection: "Race", via: "series"}
+  	title: {type: "string", required: true},
+  	desc: {type: "string", required: true},
+  	image: {type: "string", required: true},
+  	logo: {type: "string", required: true},
+  	races: {collection: "Race", via: "series"},
+  	riders: {collection: "Rider", via: "series"}
   }
 };
