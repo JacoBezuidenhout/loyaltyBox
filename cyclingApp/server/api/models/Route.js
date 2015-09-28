@@ -21,7 +21,6 @@ module.exports = {
   },
   beforeCreate: function(values,next)
   {
-  	console.log(values);
   	values.latlngs = JSON.parse(values.latlngs);
   	next();
   }

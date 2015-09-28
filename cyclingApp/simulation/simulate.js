@@ -4,6 +4,7 @@ var provinces = require('./mockProvinces');
 var latlngsA = require("./mockLatlngsA");
 var latlngsB = require("./mockLatlngsB");
 var latlngsC = require("./mockLatlngsC");
+var people = require("./people");
 var checkpoints = require('./mockCheckpoints');
 var titles = require('./mockTitles');
 var days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -153,7 +154,7 @@ var createCheckpoints = function(route, j, cb)
 			order: checkpoints[j][i].properties.order,
 			lng: checkpoints[j][i].geometry.coordinates[0],
 			lat: checkpoints[j][i].geometry.coordinates[1],
-			message: route.title + " " + j + "-" + i,
+			message: route.title + " " + j + "-" + checkpoints[j][i].properties.order,
 			route: route.id
 		}
 		request.post(URL + '/checkpoint/create', {form: obj}, function(err,httpResponse,body){ 
@@ -181,9 +182,9 @@ var createRider = function(cb)
 	*/
 	var obj = 
 	{
-		number: "1",
-		name: "John",
-		surname: "Dough",
+		number: people[r(people.length)].number.toString(),
+		name: people[r(people.length)].name,
+		surname: people[r(people.length)].surname,
 		club: "",
 		sponsor: ""
 	};
@@ -232,54 +233,62 @@ var registerRider = function(rider,route,cb)
 	}
 }
 
-function compare(a,b) {
-  if (a.order < b.order)
-    return -1;
-  if (a.order > b.order)
-    return 1;
-  return 0;
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
 }
 
-var simulate = function()
+var delayTime = Math.floor(Math.random()*10000)+1000;
+
+var simulate = function(i)
 {
 	request.get(URL + '/route', function(err,httpResponse,body){ 
 		// console.log(body);
-		var route = JSON.parse(body)[1];
+		var route = JSON.parse(body)[i%3];
 		registerRider({},route,function(r){
 			var timeout = 0;
 			console.log(route.checkpoints);
-			route.checkpoints.sort(compare);
+			route.checkpoints = sortByKey(route.checkpoints,"order");
 
 			var i = 0;
+
 		    var cpTimeout = setInterval(function(){
-			    if (i < route.checkpoints.length)
+			    if (i < route.checkpoints.length-2)
 			    {
 				    var cp = JSON.parse(JSON.stringify(route.checkpoints[i]));
-		        	
-		            var obj = 
-		            {
-		            	checkpoint: cp.id,
-		            	rider: r.id,
-		            	updateString: (new Date().getTime()) + ": " + r.name + " passed " + cp.title
-		            }
-		            request.post(URL + '/update/create', {form: obj}, function(err,httpResponse,body){ 
-						console.log(JSON.parse(body));
-					});
+		            setTimeout(function(){	
+			            var obj = 
+			            {
+			            	checkpoint: cp.id,
+			            	rider: r.id,
+			            	date: new Date(),
+			            	updateString: (new Date().getTime()) + ": " + r.name + " passed " + cp.title
+			            }
+			            request.post(URL + '/update/create', {form: obj}, function(err,httpResponse,body){ 
+							console.log(JSON.parse(body));
+						});
+		            },Math.floor(Math.random()*delayTime/2));
 		        }
 		        else
 		        {
 		        	clearTimeout(cpTimeout);
 		        }
 		      i++;
-		    }, 5000);
+		    }, delayTime);
 		});
 	});
 
 }
 
 
-// createData(1,3);
-simulate();
+createData(1,3);
+setTimeout(function(){
+	for (var i = 0; i < 100; i++) {
+		simulate(i);
+	};
+},5000);
 
 
 

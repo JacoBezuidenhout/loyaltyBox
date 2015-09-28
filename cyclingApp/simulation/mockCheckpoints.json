@@ -189,7 +189,7 @@
 	    {
 	      "type": "Feature",
 	      "properties": {
-	      	"order": "2"
+	      	"order": "1"
 	      	},
 	      "geometry": {
 	        "type": "Point",
@@ -202,7 +202,7 @@
 	    {
 	      "type": "Feature",
 	      "properties": {
-	      	"order": "1"
+	      	"order": "2"
 	      	},
 	      "geometry": {
 	        "type": "Point",

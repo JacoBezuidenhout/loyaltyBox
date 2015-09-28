@@ -1,15 +1,15 @@
-<ion-view view-title="{{race.title}}">
+<ion-view view-title="{{route.title}}">
   <ion-content>
     <div class="list card">
 	    <div class="item item-avatar">
-	        <img ng-src="{{race.image}}">
-	        <h2>{{fav.name || 'No'}} {{fav.surname || 'Name'}}</h2>
-	        <p>{{fav.lastUpdate || 'No Updates for this rider'}}</p>
+	        <img ng-src="{{route.image}}">
+	        <h2>Route Statistics</h2>
+	        <p><b>Leader: </b>{{ranks[0].rider.name || 'No'}} {{ranks[0].rider.surname || 'Name'}}</p>
 	    </div>
 
 	    <br/>
 	    <div class="item item-divider">
-	    	Top 3 
+	    	Top 3 <br><small>Rider rank per previous checkpoint</small>
 	    </div>
 	    <div class="item item-image" style="padding:5px;">
 			<canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"></canvas> 
@@ -17,20 +17,20 @@
 
 	    <br/>
 	    <div class="item item-divider">
-	    	Checkpoint Totals 
+	    	Checkpoint Totals <br><small>Number of riders that passed a certain checkpoint</small>
 	    </div>
 	    <div class="item item-image" style="padding:5px;">
 			<canvas id="bar" class="chart chart-bar" chart-data="data2" chart-labels="labels" chart-click="onClick"></canvas>
 	    </div>
 	    <br/>
 	    <div class="item item-divider">
-	    	Top 20 
+	    	Current Top 10 
 	    </div>
 
-	    <a class="item item-avatar" href="#/tab/rank/{{rank.id}}" ng-repeat="rank in ranks | orderBy: 'pos'">
+	    <a class="item item-avatar" href="#/tab/rank/{{rank.id}}" ng-repeat="rank in ranks | limitTo : 10">
 	      <img src="venkman.jpg">
-	      <h2>{{rank.name}} {{rank.surname}}</h2>
-	      <p>Back off, man. I'm a scientist.</p>
+	      <h2>{{rank.rider.name}} {{rank.rider.surname}}</h2>
+	      <p><b>Number: </b>{{rank.rider.number}}</p>
 	      <span class="badge badge-assertive">{{rank.pos}}</span>
 	    </a>
 

@@ -172,11 +172,20 @@ var mock = {
     },
     getRanks: function(seriesId,raceId,routeId,cb)
     {
-      cb([
-        {pos: 1, name: "Jaco", surname: "Bez", lastCheckpoint: "C", dateTime: new Date()},
-        {pos: 3, name: "Xander", surname: "Botha", lastCheckpoint: "A", dateTime: new Date()},
-        {pos: 2, name: "Pieter", surname: "Bezuidenhouit", lastCheckpoint: "B", dateTime: new Date()}
-      ]);
+      $http.get(URL + "/route/" + routeId)
+      .then(function(response){
+        console.dir(response.data.checkpoints);
+        console.log("got route");
+        if (response.data)
+          cb(response.data);
+        else
+          cb(null);
+        return;
+      },function(response){
+        if (debug) console.dir(response);
+        cb(null);
+        return;
+      });
     },
   };
   

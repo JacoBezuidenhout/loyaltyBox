@@ -18,6 +18,6 @@ module.exports = {
     },    
   	route: {model: "Route", via: "checkpoints"},
   	updates: {collection: "Update", via: "checkpoint"},
-  	lastUpdate: {type: "string", defaultsTo: "No Updates Yet"}
+  	lastUpdate: {type: "string", defaultsTo: "No Updates Yet"}  
   }
 };

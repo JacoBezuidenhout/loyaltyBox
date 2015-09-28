@@ -1,3 +1,22 @@
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
+function hasNumber(array, number)
+{
+  for (var i = 0; i < array.length; i++) {
+    if (array[i].rider.number == number) 
+    {
+      console.log("HASNUMBER",array[i].number,number)
+      return true;
+    }
+  };
+  return false;
+}
+
 angular.module('app.controllers', [])
 
 .controller('SeriesCtrl', function($rootScope, $ionicSlideBoxDelegate, $scope, $stateParams, $location, Series) {
@@ -140,30 +159,79 @@ angular.module('app.controllers', [])
 
 .controller('RankCtrl', function($rootScope, $scope, $stateParams, Series, $timeout) {
 
-  $scope.labels = ["A", "B", "C", "D", "E", "F", "G"];
-  $scope.series = ["123: Jaco Bezuidenhout","456: John Dough","789: Xander Botha"];
-  $scope.data = [
-    [4, 4, 2, 1, 1, null, null],
-    [2, 3, 6, 2, 2, null, null],
-    [3, 2, 1, 5, 3, null, null]
-  ];
-
-  $scope.data2 = [
-    [300, 224, 150, 50, 3, null, null]
-  ];
-  $scope.onClick = function (points, evt) {
-    console.log(points, evt);
-  };
-
   $scope.$on('$ionicView.enter', function(e) {
+
+    $scope.onClick = function (points, evt) {
+      console.log(points, evt);
+    };
     Series.show();
     var seriesId = $stateParams.seriesId;
     var raceId = $stateParams.raceId;
     var routeId = $stateParams.routeId;
 
-    Series.getRanks(seriesId,raceId,routeId, function(ranks){
+    Series.getRanks(seriesId,raceId,routeId, function(route){
+      $scope.route = route;
+      $scope.data2 = [];
+      $scope.labels = [];
+      
+      var l = [];
+      var d = [];
+      var lastCheckpoint = 0;
+
+      route.checkpoints = sortByKey(route.checkpoints,"order");
+
+      for (var i = 0; i < route.checkpoints.length; i++)
+      {
+        console.log(route.checkpoints[i]);
+
+        if (route.checkpoints[i].lastRank) lastCheckpoint = i;
+
+        l.push(route.checkpoints[i].title);
+        d.push(route.checkpoints[i].lastRank || null);
+      }
+      
+      $scope.data2.push(d);
+      $scope.labels = l;
+
+      var ranks = [];
+
+      for (var i = lastCheckpoint - 1; i >= 0; i--) {
+        for (var j = 0; j < route.checkpoints[i].ranks.length; j++) {
+          console.log("RANKS",route.checkpoints[i].ranks);
+          if (!hasNumber(ranks,route.checkpoints[i].ranks[j].rider.number))
+          {
+            route.checkpoints[i].ranks[j].pos = ranks.length + 1;
+            ranks.push(route.checkpoints[i].ranks[j]);
+          }
+        };
+          
+      };
+
       $scope.ranks = ranks;
-      console.log(ranks);
+
+      $scope.series = [];
+      $scope.data = [];
+
+      for (var i = 0; i < Math.min(3,ranks.length); i++) {
+        $scope.series.push(ranks[i].rider.number + ": " + ranks[i].rider.name + " " + ranks[i].rider.surname);
+        var tmpArray = [];
+        for (var j = 0; j < route.checkpoints.length; j++) {
+          if (route.checkpoints[j].ranks)
+          {
+            for (var k = 0; k < route.checkpoints[j].ranks.length; k++) {
+              if (route.checkpoints[j].ranks[k].rider.number == ranks[i].rider.number)
+              {
+                tmpArray.push(route.checkpoints[j].ranks[k].pos);
+              }
+            };
+          }
+          else tmpArray.push(null);
+        }
+        $scope.data.push(tmpArray);  
+      };
+
+
+
       Series.hide();
     });
 
