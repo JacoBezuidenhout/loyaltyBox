@@ -124,6 +124,33 @@ angular.module('app.controllers', [])
 
 })
 .controller('RouteCtrl', function($rootScope, $scope, $stateParams, Series, leafletData,$timeout) {
+  $scope.refreshRoutes = function()
+  {
+    $scope.loaded = false;
+    Series.getRoutes($scope.race,function(routes){
+      Series.hide(); 
+      $scope.routes = routes;
+
+      var bounds = [];
+      for (var i = 0; i < routes.length; i++) {
+        for (var j = 0; j < routes[i].checkpoints.length; j++) {
+          bounds.push([routes[i].checkpoints[j].lat, routes[i].checkpoints[j].lng]);
+        };
+      };
+      
+      $timeout(function(){
+        for (var i = 0; i < routes.length; i++) {
+          leafletData.getMap(routes[i].id).then(function(map) {
+            console.log("got map");
+            map.fitBounds(bounds);
+          });
+        }
+        $scope.loaded = true;
+      },200);
+
+    });
+  }
+  
   $scope.$on('$ionicView.enter', function(e) {
     Series.show();
     var seriesId = $stateParams.seriesId;
@@ -131,28 +158,7 @@ angular.module('app.controllers', [])
     if (debug) console.log(seriesId,raceId);
     Series.getSeries(seriesId,function(s){ 
       $scope.race = Series.getRace(s,raceId);
-      Series.getRoutes($scope.race,function(routes){
-        $scope.routes = routes;
-
-        var bounds = [];
-        for (var i = 0; i < routes.length; i++) {
-          for (var j = 0; j < routes[i].checkpoints.length; j++) {
-            bounds.push([routes[i].checkpoints[j].lat, routes[i].checkpoints[j].lng]);
-          };
-        };
-        
-        $timeout(function(){
-          for (var i = 0; i < routes.length; i++) {
-            leafletData.getMap(routes[i].id).then(function(map) {
-              console.log("got map");
-              map.fitBounds(bounds);
-            });
-          }
-          $scope.loaded = true;
-        },1000);
-
-        Series.hide();
-      });
+      $scope.refreshRoutes();
     });
   });
 })
@@ -238,12 +244,23 @@ angular.module('app.controllers', [])
   });
 })
 
-.controller('FavCtrl', function($rootScope, $http, $scope, Series) {
+.controller('FavCtrl', function($rootScope, $http, $scope, Series, $ionicPopup) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
   //
+
+  var showAlert = function(n) {
+   var alertPopup = $ionicPopup.alert({
+     title: 'Not Found!',
+     template: 'Rider #' + n + ' was not found.'
+   });
+   alertPopup.then(function(res) {
+
+   });
+  };
+
   $scope.$on('$ionicView.enter', function(e) {
     $scope.favourites = $rootScope.deviceObj.follows || [];
   });
@@ -268,7 +285,8 @@ angular.module('app.controllers', [])
       }
       else
       {
-        alert("No Rider Found with that number.")
+        Series.hide();
+        showAlert(n);
       }
     },function(response){
       //error!!
@@ -278,13 +296,107 @@ angular.module('app.controllers', [])
   };
 
   $scope.remove = function(f) {
-
+    // alert(f);
   };
 })
 
-.controller('FavDetailCtrl', function($rootScope, $scope, $stateParams, Series) {
+.controller('FavDetailCtrl', function($rootScope, $scope, $stateParams, Series, $timeout, $http, leafletData) {
   var riderId = $stateParams.riderId;
-  
+  var rankId = $stateParams.rankId;
+
+  angular.extend($scope, {
+      defaults: {
+          tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+          zoomControlPosition: 'topright',
+          tileLayerOptions: {
+              opacity: 0.9,
+              detectRetina: true,
+              reuseTiles: true,
+          },
+          scrollWheelZoom: false
+      },
+      routes: {},
+      legend: {},
+      center: {
+        zoom: 13,
+        "lng": 28.15844,
+        "lat": -25.84625
+      },
+      checkpoints: [],
+      layers: {}
+  });
+
+  $scope.refreshRoutes = function(rider)
+  {
+    $http.get(URL + "/route/" + rider.routes[0].id)
+    .then(function(route){
+      
+      $scope.fav = rider;
+      $scope.route = route.data;
+
+      var bounds = [];
+      for (var i = 0; i < route.data.checkpoints.length; i++) 
+      {
+        route.data.checkpoints[i].icon.markerColor = 'red';
+        route.data.checkpoints[i].message = '<h2>' + route.data.checkpoints[i].title + '</h2>Not passed yet';
+        bounds.push([route.data.checkpoints[i].lat, route.data.checkpoints[i].lng]);
+      }
+
+      $scope.checkpoints = route.data.checkpoints;
+      console.log(route.data.id);
+      $timeout(function(){
+        leafletData.getMap("map").then(function(map) {
+          console.log("got route map");
+          map.fitBounds(bounds);
+          $scope.loaded = true;
+        });
+      },500);
+
+    },function(err){})
+
+    Series.hide();
+  }
+
+  Series.show();
+
+  if (rankId)
+  {
+    $http.get(URL + "/rider/?number=" + rankId)
+    .then(function(response){
+      if (response.data.length)
+      {
+        $scope.refreshRoutes(response.data[0]);
+      }
+      else
+      {
+        Series.hide();
+      }
+    },function(response){
+      //error!!
+      console.log(response);
+      Series.hide();
+    });
+  }
+
+  if (riderId)
+  {
+    $http.get(URL + "/rider/" + riderId)
+    .then(function(response){
+      if (response.data)
+      {
+        $scope.refreshRoutes(response.data);
+      }
+      else
+      {
+        Series.hide();
+      }
+    },function(response){
+      //error!!
+      console.log(response);
+      Series.hide();
+    });
+  }
+
 })
 
 .controller('SettingsCtrl', function($rootScope, $scope) {

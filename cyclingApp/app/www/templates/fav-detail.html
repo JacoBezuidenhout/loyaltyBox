@@ -14,9 +14,12 @@
         <p>{{fav.lastUpdate || 'No Updates for this rider'}}</p>
         <button class="button button-assertive button-clear" ng-click="following ? unfollow() : follow()"><i class="icon {{following ? 'ion-ios-star' : 'ion-ios-star-outline'}}"></i></button>
       </div>
-
-      <div class="item item-image" style="padding:5px;" data-tap-disabled="true">
-         <leaflet id="{{route.id}}" markers="route.checkpoints" defaults="defaults" legend="legend" paths="[route]" width="100%" height="250px"></leaflet>
+      <div class="list card"> 
+        <div class="item item-button-right">{{route.title}}<button ng-click="refreshRoutes();" class="button button-clear button-positive"><i class="icon ion-ios-refresh"></i></button></div>
+        <div class="item item-image" data-tap-disabled="true">
+          <ion-spinner ng-hide="loaded" icon="lines" style="position: absolute; top:100px; z-index: 1;"></ion-spinner> 
+          <leaflet id="map" markers="route.checkpoints" defaults="defaults" paths="[route]" width="100%" height="250px"></leaflet>
+        </div>
       </div>
 
       <br/>

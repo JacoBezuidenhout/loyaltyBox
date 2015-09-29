@@ -27,7 +27,7 @@
 	    	Current Top 10 
 	    </div>
 
-	    <a class="item item-avatar" href="#/tab/rank/{{rank.id}}" ng-repeat="rank in ranks | limitTo : 10">
+	    <a class="item item-avatar" href="#/tab/rank/{{rank.rider.number}}" ng-repeat="rank in ranks | limitTo : 10">
 	      <img src="venkman.jpg">
 	      <h2>{{rank.rider.name}} {{rank.rider.surname}}</h2>
 	      <p><b>Number: </b>{{rank.rider.number}}</p>

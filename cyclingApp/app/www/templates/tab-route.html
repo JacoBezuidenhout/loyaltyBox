@@ -2,7 +2,7 @@
   <ion-content>
     <ion-list>
       <div class="list card" ng-repeat="route in routes"> 
-	    <div class="item item-divider">{{route.title}}</div>
+	    <div class="item item-button-right">{{route.title}}<button ng-click="refreshRoutes();" class="button button-clear button-positive"><i class="icon ion-ios-refresh"></i></button></div>
 	    <div class="item item-image" data-tap-disabled="true">
 	    	<ion-spinner ng-hide="loaded" icon="lines" style="position: absolute; top:100px; z-index: 1;"></ion-spinner> 
 	    	<leaflet id="{{route.id}}" markers="route.checkpoints" defaults="defaults" paths="[route]" width="100%" height="250px"></leaflet>

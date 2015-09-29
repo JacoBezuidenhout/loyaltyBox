@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.app484666" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>app</name>
+<widget id="za.co.xrobotix.cyclapp" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>CyclAPP</name>
   <description>
-        An Ionic Framework and Cordova project.
+        A Cycling-Timing App
     </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+  <author email="jaco@xrobotix.co.za" href="http://xrobotix.co.za/">
+      Jaco Bezuidenhout
     </author>
   <content src="index.html"/>
   <access origin="*"/>
