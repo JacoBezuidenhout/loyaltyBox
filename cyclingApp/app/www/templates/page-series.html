@@ -4,7 +4,7 @@
   }
 </style>
 
-<ion-view view-title="Select your series">
+<ion-view view-title="{{deviceObj.id ? 'Select your series' : 'Connecting'}}">
   <ion-content class="padding" scroll="false">
     
     <ion-slide-box show-pager="false" auto-play="true" does-continue="true">
@@ -12,12 +12,12 @@
       <ion-slide ng-repeat="s in series">
           <div class="list card">
             <div class="item item-avatar">
-              <img ng-src="{{s.logo}}">
+              <img ng-src="{{s.logo || './img/icons/globe.png'}}">
               <h2>{{s.title}}</h2>
               <p>{{s.desc}}</p>
             </div>
             <div class="item item-image">
-              <img ng-src="{{s.image}}">
+              <img ng-src="{{s.image || './img/placeholder.jpg'}}"> 
             </div>
           </div>
       </ion-slide>

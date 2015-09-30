@@ -90,7 +90,7 @@ var mock = {
       $ionicLoading.show({
         template: '<ion-spinner icon="lines" class="spinner-energized"></ion-spinner><br/>Loading...',
         noBackdrop: true,
-        duration: 5000
+        duration: 10000
       });
     },
     hide : function(){
@@ -133,8 +133,10 @@ var mock = {
       }
     },
     getSeries: function(seriesId,cb) {
+      console.log(seriesId,series);
       for (var i = 0; i < series.length; i++) {
-        if (series[i].id === seriesId) {
+          console.log("Searching for",seriesId,series[i]);
+        if (series[i].id == seriesId) {
           cb(series[i]);
           return;
         }
@@ -145,7 +147,7 @@ var mock = {
     {
       for (var j = 0; j < s.races.length; j++)
       {
-        if (s.races[j].id === raceId)
+        if (s.races[j].id == raceId)
         {
           if (debug) console.log("race found");
           return s.races[j];

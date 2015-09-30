@@ -4,6 +4,16 @@
     <ion-toggle  ng-model="settings.enableFriends">
         Enable Friends
     </ion-toggle>
+    
+    <button class="button button-primary button-block " ng-click="checkForUpdates()">
+	  Check for updates
+	</button>
+	<p style="text-align: center" ng-show="loading"><ion-spinner icon="lines" class="spinner-energized"></ion-spinner></p>
+	<p style="text-align: center">{{res}}</p>
+	<button class="button button-stable button-block button-pulse" ng-if="hasUpdate" ng-click="doUpdate()">
+	  Download update
+	</button>
+
     </ion-list>
   </ion-content>
 </ion-view>

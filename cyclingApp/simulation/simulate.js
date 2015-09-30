@@ -10,6 +10,7 @@ var titles = require('./mockTitles');
 var days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
 var URL = "http://cycling.peoplesoft.co.za";
+URL = "http://localhost:1340";
 
 var getLatLngs = function(j)
 {

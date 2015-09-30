@@ -1,5 +1,6 @@
 L.AwesomeMarkers.Icon.prototype.options.prefix = 'ion';
-var URL = "http://cycling.peoplesoft.co.za";
+// var URL = "http://cycling.peoplesoft.co.za";
+var URL = "http://localhost:1340";
 var debug = false;
 // delete window.localStorage.deviceObj;
 // Ionic Starter App
@@ -9,11 +10,14 @@ var debug = false;
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'app.controllers', 'app.services','leaflet-directive','chart.js'])
+angular.module('app', ['ionic','ionic.service.core','ionic.service.deploy', 'app.controllers', 'app.services','leaflet-directive','chart.js'])
 
-  .run(function($ionicPlatform,$http,$rootScope) {
+  .run(function($ionicPlatform,$http,$rootScope,$ionicUser) {
     $ionicPlatform.ready(function() {
       var deviceInformation = ionic.Platform.device();
+      $rootScope.deviceObj = JSON.parse(window.localStorage.deviceObj 
+          || JSON.stringify({deviceInfo: deviceInformation, password: "12345678", follows: []}));
+      
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
       if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -21,22 +25,32 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services','leaflet-direc
         cordova.plugins.Keyboard.disableScroll(true);
 
       }
+      
       if (window.StatusBar) {
         // org.apache.cordova.statusbar required
         StatusBar.styleLightContent();
       }
-      $rootScope.deviceObj = JSON.parse(window.localStorage.deviceObj 
-          || JSON.stringify({deviceInfo: deviceInformation, password: "12345678", follows: []}));
+      
+      $rootScope.$on('$cordovaPush:tokenReceived', function(event, data) {
+        console.log('Got token', data.token, data.platform);
+        // Do something with the token  
+      });
+
+      console.log("deviceObj",$rootScope.deviceObj);
 
       if ($rootScope.deviceObj.id)
       {
         $http.post(URL + "/device/update/" + $rootScope.deviceObj.id, {}).then(function(response){
           
           response.data.follows = response.data.follows || [];
+
           window.localStorage.deviceObj = JSON.stringify(response.data);
           $rootScope.deviceObj = response.data;
           console.log($rootScope.deviceObj);
-
+          $ionicUser.identify({
+            user_id: $rootScope.deviceObj.id,
+            name: 'Mobile'
+          });
         },function(response){
           //error!!
         });
@@ -49,7 +63,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services','leaflet-direc
           window.localStorage.deviceObj = JSON.stringify(response.data);
           $rootScope.deviceObj = response.data;
           console.log($rootScope.deviceObj);
-
+          $ionicUser.identify({
+            user_id: $rootScope.deviceObj.id,
+            name: 'Mobile'
+          });
         },function(response){
           //error!!
         });
@@ -127,7 +144,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services','leaflet-direc
     }
   })
   .state('tab.rank', {
-    url: '/rank/:rankId',
+    url: '/rank/:riderId',
     views: {
       'tab-dash': {
         templateUrl: 'templates/fav-detail.html',

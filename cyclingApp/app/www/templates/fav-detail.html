@@ -4,43 +4,41 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{fav.name || 'No'}} {{fav.surname || 'Name'}}">
+<ion-view view-title="{{rider.name}} {{rider.surname}}">
   <ion-content class="padding">
     <div class="list card">
 
       <div class="item item-avatar item-button-right">
-        <img ng-src="{{fav.image}}">
-        <h2>{{fav.name || 'No'}} {{fav.surname || 'Name'}}</h2>
-        <p>{{fav.lastUpdate || 'No Updates for this rider'}}</p>
+        <img ng-src="{{rider.image || './img/icons/user.png'}}">
+        <h2>{{rider.name || 'No'}} {{rider.surname || 'Name'}}</h2>
+        <p><b>Club:</b> {{rider.club || 'No club specified'}}</p>
+        <p><b>Sponsor:</b> {{rider.sponsor || 'No sponsor specified'}}</p>
         <button class="button button-assertive button-clear" ng-click="following ? unfollow() : follow()"><i class="icon {{following ? 'ion-ios-star' : 'ion-ios-star-outline'}}"></i></button>
       </div>
-      <div class="list card"> 
-        <div class="item item-button-right">{{route.title}}<button ng-click="refreshRoutes();" class="button button-clear button-positive"><i class="icon ion-ios-refresh"></i></button></div>
-        <div class="item item-image" data-tap-disabled="true">
-          <ion-spinner ng-hide="loaded" icon="lines" style="position: absolute; top:100px; z-index: 1;"></ion-spinner> 
-          <leaflet id="map" markers="route.checkpoints" defaults="defaults" paths="[route]" width="100%" height="250px"></leaflet>
-        </div>
-      </div>
-
-      <br/>
+      
       <div class="item item-divider">
-        Rank per checkpoint
+        Rank per checkpoint<br/>
+        <small>{{graph.route.title}}</small>
       </div>
       <div class="item item-image" style="padding:5px;">
-        <canvas id="line" class="chart chart-line" chart-data="data" chart-labels="labels" chart-legend="false" chart-series="series" chart-click="onClick"></canvas> 
+        <canvas id="line" class="chart chart-line" chart-data="[graph.data]" chart-labels="graph.labels" chart-legend="false" chart-series="[]" chart-click="onClick"></canvas> 
       </div>
+      <a class="item item-icon-left assertive" href="#/tab/dash/0/0/{{graph.route.id}}">
+        <i class="icon ion-stats-bars"></i>
+      Rankings
+      </a>
 
     </div>
     <div class="list card">
 
       <div class="item item-divider">
-        <h2>Previous Races</h2>
+        <h2>Previous Routes</h2>
       </div>
 
-      <div class="item item-avatar" ng-repeat="race in races">
-        <img src="race.icon">
-        {{race.title}}
-        <span class="badge badge-assertive">{{race.rank}}</span>
+      <div class="item item-avatar" ng-repeat="route in rider.routes" ng-click="getRouteRank(route.id)">
+        <img ng-src="{{route.icon || './img/icons/barchart.png'}}">
+        {{route.title}}
+        <span class="badge badge-assertive">{{route.rank}}</span>
       </div>
 
     </div>

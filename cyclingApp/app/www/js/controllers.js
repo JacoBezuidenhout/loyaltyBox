@@ -107,8 +107,10 @@ angular.module('app.controllers', [])
       $location.path("/page/series");
     else
     {
+      console.log("Search for Series",seriesId);
       Series.getSeries(seriesId,function(s){ 
-        console.log("Got Series");
+
+        console.log("Got Series",s);
         $scope.series = s;
         $rootScope.currentRace = $scope.series.races[$scope.series.races.length-1];
         $rootScope.currentSeries = $scope.series;
@@ -163,84 +165,25 @@ angular.module('app.controllers', [])
   });
 })
 
-.controller('RankCtrl', function($rootScope, $scope, $stateParams, Series, $timeout) {
+.controller('RankCtrl', function($rootScope, $scope, $stateParams, $http, Series, $timeout) {
 
   $scope.$on('$ionicView.enter', function(e) {
 
-    $scope.onClick = function (points, evt) {
-      console.log(points, evt);
-    };
     Series.show();
+    
     var seriesId = $stateParams.seriesId;
     var raceId = $stateParams.raceId;
     var routeId = $stateParams.routeId;
 
-    Series.getRanks(seriesId,raceId,routeId, function(route){
-      $scope.route = route;
-      $scope.data2 = [];
-      $scope.labels = [];
-      
-      var l = [];
-      var d = [];
-      var lastCheckpoint = 0;
-
-      route.checkpoints = sortByKey(route.checkpoints,"order");
-
-      for (var i = 0; i < route.checkpoints.length; i++)
-      {
-        console.log(route.checkpoints[i]);
-
-        if (route.checkpoints[i].lastRank) lastCheckpoint = i;
-
-        l.push(route.checkpoints[i].title);
-        d.push(route.checkpoints[i].lastRank || null);
-      }
-      
-      $scope.data2.push(d);
-      $scope.labels = l;
-
-      var ranks = [];
-
-      for (var i = lastCheckpoint - 1; i >= 0; i--) {
-        for (var j = 0; j < route.checkpoints[i].ranks.length; j++) {
-          console.log("RANKS",route.checkpoints[i].ranks);
-          if (!hasNumber(ranks,route.checkpoints[i].ranks[j].rider.number))
-          {
-            route.checkpoints[i].ranks[j].pos = ranks.length + 1;
-            ranks.push(route.checkpoints[i].ranks[j]);
-          }
-        };
-          
-      };
-
-      $scope.ranks = ranks;
-
-      $scope.series = [];
-      $scope.data = [];
-
-      for (var i = 0; i < Math.min(3,ranks.length); i++) {
-        $scope.series.push(ranks[i].rider.number + ": " + ranks[i].rider.name + " " + ranks[i].rider.surname);
-        var tmpArray = [];
-        for (var j = 0; j < route.checkpoints.length; j++) {
-          if (route.checkpoints[j].ranks)
-          {
-            for (var k = 0; k < route.checkpoints[j].ranks.length; k++) {
-              if (route.checkpoints[j].ranks[k].rider.number == ranks[i].rider.number)
-              {
-                tmpArray.push(route.checkpoints[j].ranks[k].pos);
-              }
-            };
-          }
-          else tmpArray.push(null);
-        }
-        $scope.data.push(tmpArray);  
-      };
-
-
-
+    $http.get(URL + "/route/ranks/" + routeId)
+    .then(function(ranks){
+      console.log(ranks);
+      $scope.ranks = ranks.data;
+      Series.hide();
+    },function(err){
       Series.hide();
     });
-
+      
   });
 })
 
@@ -296,95 +239,102 @@ angular.module('app.controllers', [])
   };
 
   $scope.remove = function(f) {
-    // alert(f);
+    Series.show();
+    $http.get(URL + "/device/" + $rootScope.deviceObj.id + "/follows/remove/" + f.id)
+    .then(function(response){
+      console.log(response.data)
+      $rootScope.deviceObj = response.data;
+      $scope.favourites = $rootScope.deviceObj.follows || [];
+      Series.hide();
+    },function(response){
+      //error!!
+      console.log(response);
+      Series.hide();
+    });
   };
 })
 
 .controller('FavDetailCtrl', function($rootScope, $scope, $stateParams, Series, $timeout, $http, leafletData) {
   var riderId = $stateParams.riderId;
-  var rankId = $stateParams.rankId;
+  $scope.following = false;
 
-  angular.extend($scope, {
-      defaults: {
-          tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-          zoomControlPosition: 'topright',
-          tileLayerOptions: {
-              opacity: 0.9,
-              detectRetina: true,
-              reuseTiles: true,
-          },
-          scrollWheelZoom: false
-      },
-      routes: {},
-      legend: {},
-      center: {
-        zoom: 13,
-        "lng": 28.15844,
-        "lat": -25.84625
-      },
-      checkpoints: [],
-      layers: {}
-  });
-
-  $scope.refreshRoutes = function(rider)
-  {
-    $http.get(URL + "/route/" + rider.routes[0].id)
-    .then(function(route){
-      
-      $scope.fav = rider;
-      $scope.route = route.data;
-
-      var bounds = [];
-      for (var i = 0; i < route.data.checkpoints.length; i++) 
-      {
-        route.data.checkpoints[i].icon.markerColor = 'red';
-        route.data.checkpoints[i].message = '<h2>' + route.data.checkpoints[i].title + '</h2>Not passed yet';
-        bounds.push([route.data.checkpoints[i].lat, route.data.checkpoints[i].lng]);
-      }
-
-      $scope.checkpoints = route.data.checkpoints;
-      console.log(route.data.id);
-      $timeout(function(){
-        leafletData.getMap("map").then(function(map) {
-          console.log("got route map");
-          map.fitBounds(bounds);
-          $scope.loaded = true;
-        });
-      },500);
-
-    },function(err){})
-
-    Series.hide();
-  }
-
-  Series.show();
-
-  if (rankId)
-  {
-    $http.get(URL + "/rider/?number=" + rankId)
+   $scope.follow = function() {
+    Series.show();
+    $http.get(URL + "/device/" + $rootScope.deviceObj.id + "/follows/add/" + riderId)
     .then(function(response){
-      if (response.data.length)
-      {
-        $scope.refreshRoutes(response.data[0]);
-      }
-      else
-      {
-        Series.hide();
-      }
+      console.log(response.data)
+      $rootScope.deviceObj = response.data;
+      $scope.following = true;
+      Series.hide();
     },function(response){
       //error!!
       console.log(response);
       Series.hide();
     });
+  };
+
+  $scope.unfollow = function() {
+    Series.show();
+    $http.get(URL + "/device/" + $rootScope.deviceObj.id + "/follows/remove/" + riderId)
+    .then(function(response){
+      console.log(response.data)
+      $rootScope.deviceObj = response.data;
+      $scope.following = false;
+      Series.hide();
+    },function(response){
+      //error!!
+      console.log(response);
+      Series.hide();
+    });
+  };
+
+  $scope.getRouteRank = function(routeId)
+  {
+    if (riderId && routeId)
+    {
+      Series.show();
+      $http.get(URL + "/route/rank/" + routeId + "?riderId=" + riderId)
+      .then(function(response){
+        if (response.data)
+        {
+          
+          $scope.graph = response.data.graph;
+
+          for (var i = 0; i < $rootScope.deviceObj.follows.length; i++) {
+            if ($rootScope.deviceObj.follows[i].id == $scope.rider.id)
+              $scope.following = true;
+          };
+
+          Series.hide();
+        }
+        else
+        {
+          Series.hide();
+        }
+      },function(response){
+        //error!!
+        console.log(response);
+        Series.hide();
+      });
+    }
   }
 
   if (riderId)
   {
-    $http.get(URL + "/rider/" + riderId)
+    Series.show();
+    $http.get(URL + "/route/rank/?riderId=" + riderId)
     .then(function(response){
       if (response.data)
       {
-        $scope.refreshRoutes(response.data);
+        $scope.rider = response.data.rider;
+        $scope.graph = response.data.graph;
+
+        for (var i = 0; i < $rootScope.deviceObj.follows.length; i++) {
+          if ($rootScope.deviceObj.follows[i].id == $scope.rider.id)
+            $scope.following = true;
+        };
+
+        Series.hide();
       }
       else
       {
@@ -399,8 +349,49 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('SettingsCtrl', function($rootScope, $scope) {
+.controller('SettingsCtrl', function($rootScope, $scope, $ionicDeploy, $ionicPlatform) {
   $scope.settings = {
     enableFriends: true
   };
-});
+
+  $scope.clearCache = function()
+  {
+    delete window.localStorage.deviceObj;
+  }
+
+  $ionicPlatform.ready(function() {
+  // Update app code with new release from Ionic Deploy
+    $scope.doUpdate = function() {
+      $scope.loading = true;
+      $ionicDeploy.update().then(function(res) {
+        console.log('Update Success! ', res);
+        $scope.res = 'Update Success! ';
+        $scope.loading = false;
+      }, function(err) {
+        console.log('Update error! ', err);
+        $scope.res = 'Update error! ' + err;
+        $scope.loading = false;
+      }, function(prog) {
+        console.log('Progress... ', prog);
+        $scope.res = prog + "%";
+      });
+    };
+
+    // Check Ionic Deploy for new code
+    $scope.checkForUpdates = function() {
+      $scope.loading = true;
+      $scope.res = 'Checking for updates';
+      console.log('Checking for updates');
+      $ionicDeploy.check().then(function(hasUpdate) {
+        console.log('Update available: ' + hasUpdate);
+        $scope.res = 'Update available! ';
+        $scope.loading = false;
+        $scope.hasUpdate = hasUpdate;
+      }, function(err) {
+        console.error('Unable to check for updates', err);
+        $scope.res = 'Update check error! ' + err;
+        $scope.loading = false;
+      });
+    }
+  });
+})

@@ -13,7 +13,7 @@
           </button>
       </div>
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="fav in favourites" type="item-text-wrap" href="#/tab/fav/{{fav.id}}">
-        <img ng-src="{{fav.image}}">
+        <img ng-src="{{fav.image || './img/icons/user.png'}}">
         <h2>{{fav.name}} {{fav.surname}}</h2>
         <p>{{fav.lastUpdate}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
