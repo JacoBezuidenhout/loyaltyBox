@@ -102,6 +102,9 @@ angular.module('app.controllers', [])
   }
 
   $scope.$on('$ionicView.enter', function(e) {
+  
+  });
+  
     var seriesId = $stateParams.seriesId || window.localStorage.seriesId || "No Series Selected";
     if (seriesId == "No Series Selected")
       $location.path("/page/series");
@@ -120,7 +123,6 @@ angular.module('app.controllers', [])
         console.log("Refreshed routes",$rootScope.currentRace);
       });
     } 
-  });
   
   
 
@@ -154,6 +156,9 @@ angular.module('app.controllers', [])
   }
   
   $scope.$on('$ionicView.enter', function(e) {
+  
+  });
+
     Series.show();
     var seriesId = $stateParams.seriesId;
     var raceId = $stateParams.raceId;
@@ -162,12 +167,13 @@ angular.module('app.controllers', [])
       $scope.race = Series.getRace(s,raceId);
       $scope.refreshRoutes();
     });
-  });
 })
 
 .controller('RankCtrl', function($rootScope, $scope, $stateParams, $http, Series, $timeout) {
 
   $scope.$on('$ionicView.enter', function(e) {
+
+  });
 
     Series.show();
     
@@ -184,7 +190,6 @@ angular.module('app.controllers', [])
       Series.hide();
     });
       
-  });
 })
 
 .controller('FavCtrl', function($rootScope, $http, $scope, Series, $ionicPopup) {
@@ -297,7 +302,7 @@ angular.module('app.controllers', [])
       .then(function(response){
         if (response.data)
         {
-          
+
           $scope.graph = response.data.graph;
 
           for (var i = 0; i < $rootScope.deviceObj.follows.length; i++) {

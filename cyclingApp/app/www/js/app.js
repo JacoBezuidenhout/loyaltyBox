@@ -1,6 +1,6 @@
 L.AwesomeMarkers.Icon.prototype.options.prefix = 'ion';
-// var URL = "http://cycling.peoplesoft.co.za";
-var URL = "http://localhost:1340";
+var URL = "http://cycling.peoplesoft.co.za";
+// var URL = "http://localhost:1340";
 var debug = false;
 // delete window.localStorage.deviceObj;
 // Ionic Starter App
