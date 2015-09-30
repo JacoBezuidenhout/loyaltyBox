@@ -1,10 +1,12 @@
 <ion-view view-title="Account">
   <ion-content>
     <ion-list>
-    <ion-toggle  ng-model="settings.enableFriends">
-        Enable Friends
-    </ion-toggle>
-    
+      <a class="item item-icon-left item-icon-right" ng-click="clearCache()">
+        <i class="icon ion-social-buffer"></i>
+          Clear Application Cache
+        <i class="icon ion-trash-a"></i>
+      </a>
+    <br/>
     <button class="button button-primary button-block " ng-click="checkForUpdates()">
 	  Check for updates
 	</button>

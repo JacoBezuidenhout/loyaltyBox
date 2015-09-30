@@ -362,6 +362,10 @@ angular.module('app.controllers', [])
   $scope.clearCache = function()
   {
     delete window.localStorage.deviceObj;
+    $scope.res = "Cache Cleared";
+    setTimeout(function(){
+      $scope.res = "";
+    },1000);
   }
 
   $ionicPlatform.ready(function() {
