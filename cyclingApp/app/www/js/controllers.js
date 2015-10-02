@@ -393,7 +393,7 @@ angular.module('app.controllers', [])
       console.log('Checking for updates');
       $ionicDeploy.check().then(function(hasUpdate) {
         console.log('Update available: ' + hasUpdate);
-        $scope.res = 'Update available! ';
+        $scope.res = hasUpdate ? 'Update available! ' : 'You are up to date!';
         $scope.loading = false;
         $scope.hasUpdate = hasUpdate;
       }, function(err) {

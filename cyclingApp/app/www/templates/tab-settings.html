@@ -4,7 +4,7 @@
       <a class="item item-icon-left item-icon-right" ng-click="clearCache()">
         <i class="icon ion-social-buffer"></i>
           Clear Application Cache
-        <i class="icon ion-trash-a"></i>
+        <i class="icon assertive ion-trash-a"></i>
       </a>
     <br/>
     <button class="button button-primary button-block " ng-click="checkForUpdates()">
@@ -12,7 +12,7 @@
 	</button>
 	<p style="text-align: center" ng-show="loading"><ion-spinner icon="lines" class="spinner-energized"></ion-spinner></p>
 	<p style="text-align: center">{{res}}</p>
-	<button class="button button-stable button-block button-pulse" ng-if="hasUpdate" ng-click="doUpdate()">
+	<button class="button button-stable button-block button-pulse" ng-show="hasUpdate" ng-click="doUpdate()">
 	  Download update
 	</button>
 

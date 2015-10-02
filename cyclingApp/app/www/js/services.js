@@ -89,8 +89,7 @@ var mock = {
     show : function() {
       $ionicLoading.show({
         template: '<ion-spinner icon="lines" class="spinner-energized"></ion-spinner><br/>Loading...',
-        noBackdrop: true,
-        duration: 10000
+        noBackdrop: true
       });
     },
     hide : function(){

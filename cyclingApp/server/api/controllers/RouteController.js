@@ -99,11 +99,11 @@ var ROUTE = {
 						};
 
 						for (var i = 0; i < Math.min(3,ranks.length); i++) {
-							gt3.push(getPos(checkpointSummary,ranks[i].rider));
+							gt3.push(getPos(checkpointSummary,ranks[i].rider).reverse());
 							gt3Labels.push(ranks[i].rider.number + ": " + ranks[i].rider.name + " " + ranks[i].rider.surname);
 						};
 						
-						gct = getCpTotals(checkpointSummary);
+						gct = getCpTotals(checkpointSummary).reverse();
 						l = l.reverse();
 
 						for (var i = 0; i < (route.checkpoints.length-l.length); i++) {
@@ -166,10 +166,7 @@ var ROUTE = {
 						};
 
 						
-						gt3 = getPos(checkpointSummary,values.rider);
-						
-						
-						gct = getCpTotals(checkpointSummary);
+						gt3 = getPos(checkpointSummary,values.rider).reverse();
 						l = l.reverse();
 
 						for (var i = 0; i < (route.checkpoints.length-l.length); i++) {
